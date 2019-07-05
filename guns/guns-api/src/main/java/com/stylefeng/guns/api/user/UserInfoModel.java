@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class UserInfoModel implements Serializable {
 
+    private Integer uuid;
     private String username;
     private String nickname;
     private String email;
@@ -16,6 +17,14 @@ public class UserInfoModel implements Serializable {
     private String headAddress;
     private long beginTime;
     private long updateTime;
+
+    public Integer getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(Integer uuid) {
+        this.uuid = uuid;
+    }
 
     public String getUsername() {
         return username;
