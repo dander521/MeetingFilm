@@ -18,7 +18,7 @@ public class UserController {
     @Reference(interfaceClass = UserAPI.class)
     private UserAPI userAPI;
 
-    @RequestMapping(name = "register", method = RequestMethod.POST)
+    @RequestMapping(value = "register", method = RequestMethod.POST)
     public ResponseVO register(UserModel userModel) {
         if (StringUtils.isEmpty(userModel.getUsername()) || StringUtils.isEmpty(userModel.getPassword())) {
             return ResponseVO.serviceFail("用户名或密码不能为空");
@@ -28,7 +28,7 @@ public class UserController {
         return isSuccess ? ResponseVO.success("注册成功") : ResponseVO.serviceFail("注册失败");
     }
 
-    @RequestMapping(name = "check", method = RequestMethod.POST)
+    @RequestMapping(value = "check", method = RequestMethod.POST)
     public ResponseVO check(String username) {
         if (!StringUtils.isEmpty(username)) {
             boolean notExist = userAPI.checkUsername(username);
@@ -38,7 +38,7 @@ public class UserController {
         }
     }
 
-    @RequestMapping(name = "logout", method = RequestMethod.GET)
+    @RequestMapping(value = "logout", method = RequestMethod.GET)
     public ResponseVO logout() {
         /*
         *
@@ -59,7 +59,7 @@ public class UserController {
         return ResponseVO.success("用户退出成功");
     }
 
-    @RequestMapping(name = "getUserInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "getUserInfo", method = RequestMethod.GET)
     public ResponseVO getUserInfo() {
         String userId = CurrentUser.getCurrentUserId();
         if (!StringUtils.isEmpty(userId)) {
@@ -70,7 +70,7 @@ public class UserController {
         }
     }
 
-    @RequestMapping(name = "updateUserInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "updateUserInfo", method = RequestMethod.POST)
     public ResponseVO updateUserInfo(UserInfoModel userInfoModel) {
         String userId = CurrentUser.getCurrentUserId();
         if (!StringUtils.isEmpty(userId)) {
