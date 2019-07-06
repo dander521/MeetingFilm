@@ -2,7 +2,7 @@ package com.stylefeng.guns.rest.modular.user;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.stylefeng.guns.api.user.UserAPI;
+import com.stylefeng.guns.api.user.UserServiceAPI;
 import com.stylefeng.guns.api.user.vo.UserInfoModel;
 import com.stylefeng.guns.api.user.vo.UserModel;
 import com.stylefeng.guns.core.util.MD5Util;
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 import java.sql.Date;
 
 @Component
-@Service(interfaceClass = UserAPI.class, loadbalance = "roundrobin")
-public class UserServiceImpl implements UserAPI {
+@Service(interfaceClass = UserServiceAPI.class, loadbalance = "roundrobin")
+public class UserServiceImpl implements UserServiceAPI {
 
     @Autowired
     private MoocUserTMapper moocUserTMapper;

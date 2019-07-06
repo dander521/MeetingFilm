@@ -3,7 +3,7 @@ package com.stylefeng.guns.api.user;
 import com.stylefeng.guns.api.user.vo.UserInfoModel;
 import com.stylefeng.guns.api.user.vo.UserModel;
 
-public interface UserAPI {
+public interface UserServiceAPI {
 
     int login(String name, String password);
 
