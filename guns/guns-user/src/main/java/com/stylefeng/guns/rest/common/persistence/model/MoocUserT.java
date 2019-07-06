@@ -1,7 +1,7 @@
 package com.stylefeng.guns.rest.common.persistence.model;
 
 import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
+import java.sql.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;

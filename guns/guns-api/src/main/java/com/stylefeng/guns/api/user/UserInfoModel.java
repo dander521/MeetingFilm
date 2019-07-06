@@ -1,6 +1,7 @@
 package com.stylefeng.guns.api.user;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 public class UserInfoModel implements Serializable {
 
@@ -15,8 +16,8 @@ public class UserInfoModel implements Serializable {
     private String biography;
     private String address;
     private String headAddress;
-    private long beginTime;
-    private long updateTime;
+    private Date beginTime;
+    private Date updateTime;
 
     public Integer getUuid() {
         return uuid;
@@ -106,19 +107,19 @@ public class UserInfoModel implements Serializable {
         this.headAddress = headAddress;
     }
 
-    public long getBeginTime() {
+    public Date getBeginTime() {
         return beginTime;
     }
 
-    public void setBeginTime(long beginTime) {
+    public void setBeginTime(Date beginTime) {
         this.beginTime = beginTime;
     }
 
-    public long getUpdateTime() {
+    public Date getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(long updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
 }

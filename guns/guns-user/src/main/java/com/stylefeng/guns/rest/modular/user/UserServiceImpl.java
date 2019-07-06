@@ -11,10 +11,10 @@ import com.stylefeng.guns.rest.common.persistence.model.MoocUserT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.sql.Date;
 
 @Component
-@Service(interfaceClass = UserAPI.class)
+@Service(interfaceClass = UserAPI.class, loadbalance = "roundrobin")
 public class UserServiceImpl implements UserAPI {
 
     @Autowired
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserAPI {
         moocUserT.setBirthday(userInfoModel.getBirthday());
         moocUserT.setBiography(userInfoModel.getBiography());
         moocUserT.setAddress(userInfoModel.getAddress());
-        moocUserT.setBeginTime(time2Date(userInfoModel.getBeginTime()));
+        moocUserT.setBeginTime(userInfoModel.getBeginTime());
 
         // 存入数据库
 
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserAPI {
 
         userInfoModel.setUuid(moocUserT.getUuid());
         userInfoModel.setUsername(moocUserT.getUserName());
-        userInfoModel.setUpdateTime(moocUserT.getUpdateTime().getTime());
+        userInfoModel.setUpdateTime(moocUserT.getUpdateTime());
         userInfoModel.setSex(moocUserT.getUserSex());
         userInfoModel.setPhone(moocUserT.getUserPhone());
         userInfoModel.setNickname(moocUserT.getNickName());
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserAPI {
         userInfoModel.setEmail(moocUserT.getEmail());
         userInfoModel.setBirthday(moocUserT.getBirthday());
         userInfoModel.setBiography(moocUserT.getBiography());
-        userInfoModel.setBeginTime(moocUserT.getBeginTime().getTime());
+        userInfoModel.setBeginTime(moocUserT.getBeginTime());
         userInfoModel.setAddress(moocUserT.getAddress());
 
         return userInfoModel;
