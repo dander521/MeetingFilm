@@ -1,5 +1,8 @@
 package com.stylefeng.guns.rest.modular.film;
 
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.stylefeng.guns.api.film.FilmServiceAPI;
+import com.stylefeng.guns.rest.modular.film.vo.FilmIndexVO;
 import com.stylefeng.guns.rest.modular.vo.ResponseVO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -9,6 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FilmController {
 
+    private static final String IMG_PRE="http://img.meetingshop.cn/";
+
+    @Reference(interfaceClass = FilmServiceAPI.class, check = false)
+    private FilmServiceAPI filmServiceAPI;
     /*
     *
     * 获取首页信息
@@ -24,19 +31,19 @@ public class FilmController {
     * */
     @RequestMapping(value = "getIndex", method = RequestMethod.GET)
     public ResponseVO getIndex() {
-
+        FilmIndexVO filmIndexVO = new FilmIndexVO();
         // 获取banner信息
-
+        filmIndexVO.setBanners(filmServiceAPI.getBanners());
         // 获取正在热映的电源
-
+        filmIndexVO.setHotFilms(filmServiceAPI.getHotFilms(true, 8));
         // 即将上映的电影
-
+        filmIndexVO.setSoonFilms(filmServiceAPI.getSoonFilms(true, 8));
         // 票房排行榜
-
+        filmIndexVO.setBoxRanking(filmServiceAPI.getBoxRanking());
         // 受欢迎的榜单
-
+        filmIndexVO.setExpectRanking(filmServiceAPI.getExpectRanking());
         // 前100
-
-        return null;
+        filmIndexVO.setTop100(filmServiceAPI.getTop());
+        return ResponseVO.success(IMG_PRE, filmIndexVO);
     }
 }

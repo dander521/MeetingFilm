@@ -1,14 +1,12 @@
 package com.stylefeng.guns.api.film.vo;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
+import java.io.Serializable;
 
 @Data
-public class BannerVO {
+public class BannerVO implements Serializable {
 
-    @Setter
-    @Getter
     private String bannerId;
     private String bannerAddress;
     private String bannerUrl;

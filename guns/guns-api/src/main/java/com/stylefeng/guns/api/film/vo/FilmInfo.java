@@ -2,8 +2,10 @@ package com.stylefeng.guns.api.film.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class FilmInfo {
+public class FilmInfo implements Serializable {
 
     private String filmId;
     private int filmType;
