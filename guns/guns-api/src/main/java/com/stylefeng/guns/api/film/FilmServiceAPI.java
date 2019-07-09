@@ -1,4 +1,4 @@
-package com.stylefeng.guns.api.film;
+package com.stylefeng.guns.api.film.vo;
 
 import com.stylefeng.guns.api.film.vo.BannerVO;
 import com.stylefeng.guns.api.film.vo.FilmInfo;
@@ -25,4 +25,6 @@ public interface FilmServiceAPI {
 
     // 获取Top100
     List<FilmInfo> getTop();
+
+
 }

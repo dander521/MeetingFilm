@@ -48,6 +48,7 @@ public class FilmController {
         return ResponseVO.success(IMG_PRE, filmIndexVO);
     }
 
+    @RequestMapping(value = "getConditionList", method = RequestMethod.GET)
     public ResponseVO getConditionList(@RequestParam(name = "catId", required = false, defaultValue = "99") String catId,
                                        @RequestParam(name = "sourceId", required = false, defaultValue = "99") String sourceId,
                                        @RequestParam(name = "yearId", required = false, defaultValue = "99") String yearId) {
