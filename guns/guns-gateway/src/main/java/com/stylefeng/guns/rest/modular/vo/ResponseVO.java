@@ -25,6 +25,8 @@ public class ResponseVO<M> {
         responseVO.setStatus(0);
         responseVO.setData(m);
         responseVO.setImgPre(imgPre);
+        responseVO.setNowPage(nowPage);
+        responseVO.setTotalPage(totalPage);
 
         return responseVO;
     }
