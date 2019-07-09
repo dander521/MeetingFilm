@@ -2,12 +2,19 @@ package com.stylefeng.guns.rest.modular.film;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.api.film.FilmServiceAPI;
+import com.stylefeng.guns.api.film.vo.CatVO;
+import com.stylefeng.guns.api.film.vo.SourceVO;
+import com.stylefeng.guns.api.film.vo.YearVO;
+import com.stylefeng.guns.rest.modular.film.vo.FilmConditionVO;
 import com.stylefeng.guns.rest.modular.film.vo.FilmIndexVO;
 import com.stylefeng.guns.rest.modular.vo.ResponseVO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequestMapping("/film/")
 @RestController
@@ -52,12 +59,93 @@ public class FilmController {
     public ResponseVO getConditionList(@RequestParam(name = "catId", required = false, defaultValue = "99") String catId,
                                        @RequestParam(name = "sourceId", required = false, defaultValue = "99") String sourceId,
                                        @RequestParam(name = "yearId", required = false, defaultValue = "99") String yearId) {
+
+        FilmConditionVO filmConditionVO = new FilmConditionVO();
         // 类型集合
+        boolean flag = false;
+        List<CatVO> cats = filmServiceAPI.getCats();
+        List<CatVO> catResult = new ArrayList<>();
+        CatVO catVO = null;
+        for (CatVO cat : cats) {
+            if (cat.getCatId().equals("99")) {
+                catVO = cat;
+                continue;
+            }
+
+            if (cat.getCatId().equals(catId)) {
+                flag = true;
+                cat.setActive(true);
+            } else {
+                cat.setActive(false);
+            }
+            catResult.add(cat);
+
+            if (!flag) {
+                catVO.setActive(true);
+            } else {
+                catVO.setActive(false);
+            }
+            catResult.add(catVO);
+        }
 
         // 片源集合
+        flag = false;
+        List<SourceVO> sources = filmServiceAPI.getSources();
+        List<SourceVO> sourceResult = new ArrayList<>();
+        SourceVO sourceVO = null;
+        for (SourceVO source : sources) {
+            if (source.getSourceId().equals("99")) {
+                sourceVO = source;
+                continue;
+            }
+
+            if (source.getSourceId().equals(sourceId)) {
+                flag = true;
+                source.setActive(true);
+            } else {
+                source.setActive(false);
+            }
+            sourceResult.add(source);
+
+            if (!flag) {
+                sourceVO.setActive(true);
+            } else {
+                sourceVO.setActive(false);
+            }
+            sourceResult.add(sourceVO);
+        }
 
         // 年代集合
+        flag = false;
+        List<YearVO> years = filmServiceAPI.getYears();
+        List<YearVO> yearResult = new ArrayList<>();
+        YearVO yearVO = null;
+        for (YearVO year : years) {
+            if (year.getYearId().equals("99")) {
+                yearVO = year;
+                continue;
+            }
 
-        return null;
+            if (year.getYearId().equals(yearId)) {
+                flag = true;
+                year.setActive(true);
+            } else {
+                year.setActive(false);
+            }
+            yearResult.add(year);
+
+            if (!flag) {
+                yearVO.setActive(true);
+            } else {
+                yearVO.setActive(false);
+            }
+            yearResult.add(yearVO);
+        }
+
+        filmConditionVO.setCatInfo(catResult);
+        filmConditionVO.setSourceInfo(sourceResult);
+        filmConditionVO.setYearInfo(yearResult);
+
+        return ResponseVO.success(filmConditionVO);
     }
 }
