@@ -14,8 +14,20 @@ public class ResponseVO<M> {
     // 图片前缀
     private String imgPre;
 
+    private int nowPage;
+    private int totalPage;
+
     // 不允许外部创建实体 单例
     private ResponseVO() {}
+
+    public static<M> ResponseVO success(int nowPage, int totalPage, String imgPre, M m) {
+        ResponseVO responseVO = new ResponseVO();
+        responseVO.setStatus(0);
+        responseVO.setData(m);
+        responseVO.setImgPre(imgPre);
+
+        return responseVO;
+    }
 
     public static<M> ResponseVO success(String imgPre, M m) {
         ResponseVO responseVO = new ResponseVO();
