@@ -6,6 +6,7 @@ import com.stylefeng.guns.rest.modular.film.vo.FilmIndexVO;
 import com.stylefeng.guns.rest.modular.vo.ResponseVO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/film/")
@@ -45,5 +46,17 @@ public class FilmController {
         // 前100
         filmIndexVO.setTop100(filmServiceAPI.getTop());
         return ResponseVO.success(IMG_PRE, filmIndexVO);
+    }
+
+    public ResponseVO getConditionList(@RequestParam(name = "catId", required = false, defaultValue = "99") String catId,
+                                       @RequestParam(name = "sourceId", required = false, defaultValue = "99") String sourceId,
+                                       @RequestParam(name = "yearId", required = false, defaultValue = "99") String yearId) {
+        // 类型集合
+
+        // 片源集合
+
+        // 年代集合
+
+        return null;
     }
 }
