@@ -79,14 +79,13 @@ public class FilmController {
                 cat.setActive(false);
             }
             catResult.add(cat);
-
-            if (!flag) {
-                catVO.setActive(true);
-            } else {
-                catVO.setActive(false);
-            }
-            catResult.add(catVO);
         }
+        if (!flag) {
+            catVO.setActive(true);
+        } else {
+            catVO.setActive(false);
+        }
+        catResult.add(catVO);
 
         // 片源集合
         flag = false;
@@ -106,14 +105,13 @@ public class FilmController {
                 source.setActive(false);
             }
             sourceResult.add(source);
-
-            if (!flag) {
-                sourceVO.setActive(true);
-            } else {
-                sourceVO.setActive(false);
-            }
-            sourceResult.add(sourceVO);
         }
+        if (!flag) {
+            sourceVO.setActive(true);
+        } else {
+            sourceVO.setActive(false);
+        }
+        sourceResult.add(sourceVO);
 
         // 年代集合
         flag = false;
@@ -133,14 +131,13 @@ public class FilmController {
                 year.setActive(false);
             }
             yearResult.add(year);
-
-            if (!flag) {
-                yearVO.setActive(true);
-            } else {
-                yearVO.setActive(false);
-            }
-            yearResult.add(yearVO);
         }
+        if (!flag) {
+            yearVO.setActive(true);
+        } else {
+            yearVO.setActive(false);
+        }
+        yearResult.add(yearVO);
 
         filmConditionVO.setCatInfo(catResult);
         filmConditionVO.setSourceInfo(sourceResult);
