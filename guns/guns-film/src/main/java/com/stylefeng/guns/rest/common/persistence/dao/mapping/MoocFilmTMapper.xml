@@ -19,4 +19,42 @@
         <result column="film_status" property="filmStatus" />
     </resultMap>
 
+
+    <select id="getFilmDetailByName" parameterType="java.lang.String" resultType="com.stylefeng.guns.api.film.vo.FilmDetailVO">
+        select
+            film.uuid as filmId,
+            film.film_name as filmName,
+            info.film_en_name as filmEnName,
+            film.img_address as imgAddress,
+            info.film_score as score,
+            info.film_score_num as scoreNum,
+            film.film_box_office as totalBox,
+            (select group_concat(show_name separator ',') from mooc_cat_dict_t t
+             where find_in_set(t.UUID, (select REPLACE(TRIM(BOTH '#' FROM film_cats),"#",',') from mooc_film_t t3 where t3.UUID = film.UUID))) as info01,
+            concat((select show_name from mooc_source_dict_t t2 where t2.UUID = film.UUID),'/',info.film_length,'分钟') info02,
+            concat(film.film_time,(select show_name from mooc_source_dict_t t2 where t2.UUID = film.UUID),'上映') info03
+
+        from mooc_film_t film,mooc_film_info_t info
+        where film.UUID = info.film_id
+          and film.film_name like "%${filmName}%"
+    </select>
+
+    <select id="getFilmDetailById" parameterType="java.lang.String" resultType="com.stylefeng.guns.api.film.vo.FilmDetailVO">
+        select
+            film.uuid as filmId,
+            film.film_name as filmName,
+            info.film_en_name as filmEnName,
+            film.img_address as imgAddress,
+            info.film_score as score,
+            info.film_score_num as scoreNum,
+            film.film_box_office as totalBox,
+            (select group_concat(show_name separator ',') from mooc_cat_dict_t t
+             where find_in_set(t.UUID, (select REPLACE(TRIM(BOTH '#' FROM film_cats),"#",',') from mooc_film_t t3 where t3.UUID = film.UUID))) as info01,
+            concat((select show_name from mooc_source_dict_t t2 where t2.UUID = film.UUID),'/',info.film_length,'分钟') info02,
+            concat(film.film_time,(select show_name from mooc_source_dict_t t2 where t2.UUID = film.UUID),'上映') info03
+
+        from mooc_film_t film,mooc_film_info_t info
+        where film.UUID = info.film_id
+          and film.UUID = #{uuid}
+    </select>
 </mapper>

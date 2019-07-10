@@ -2,18 +2,12 @@ package com.stylefeng.guns.rest.modular.film;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.api.film.FilmServiceAPI;
-import com.stylefeng.guns.api.film.vo.CatVO;
-import com.stylefeng.guns.api.film.vo.FilmVO;
-import com.stylefeng.guns.api.film.vo.SourceVO;
-import com.stylefeng.guns.api.film.vo.YearVO;
+import com.stylefeng.guns.api.film.vo.*;
 import com.stylefeng.guns.rest.modular.film.vo.FilmConditionVO;
 import com.stylefeng.guns.rest.modular.film.vo.FilmIndexVO;
 import com.stylefeng.guns.rest.modular.film.vo.FilmRequestVO;
 import com.stylefeng.guns.rest.modular.vo.ResponseVO;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -196,5 +190,39 @@ public class FilmController {
         }
 
         return ResponseVO.success(filmVO.getNowPage(),filmVO.getTotalPage(),IMG_PRE,filmVO.getFilmInfo());
+    }
+
+    @RequestMapping(value = "films/{searchParam}", method = RequestMethod.GET)
+    public ResponseVO films(@PathVariable("searchParam") String searchParam, int searchType) {
+
+        // 根据searchType，判断查询类型
+        FilmDetailVO filmDetail = filmServiceAPI.getFilmDetail(searchType, searchParam);
+        // 不同的查询类型，传入的条件会略有不同
+        String filmId = filmDetail.getFilmId();
+        // 查询影片的详细信息 -> Dubbo的异步获取
+
+        // 获取影片描述信息
+        FilmDescVO filmDescVO = filmServiceAPI.getFilmDesc(filmId);
+        // 获取图片信息
+        ImgVO imgVO = filmServiceAPI.getImgs(filmId);
+        // 获取演员信息
+        List<ActorVO> actors = filmServiceAPI.getActors(filmId);
+        // 获取导演
+        ActorVO actorVO = filmServiceAPI.getDectInfo(filmId);
+
+
+        InfoRequestVO infoRequestVO = new InfoRequestVO();
+        ActorRequestVO actorRequestVO = new ActorRequestVO();
+        actorRequestVO.setActors(actors);
+        actorRequestVO.setDirector(actorVO);
+
+        infoRequestVO.setActors(actorRequestVO);
+        infoRequestVO.setBiography(filmDescVO.getBiography());
+        infoRequestVO.setImgVO(imgVO);
+        infoRequestVO.setFilmId(filmId);
+
+        filmDetail.setInfo04(infoRequestVO);
+
+        return ResponseVO.success(IMG_PRE, filmDetail);
     }
 }
