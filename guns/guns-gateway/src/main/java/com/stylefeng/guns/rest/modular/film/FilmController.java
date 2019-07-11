@@ -204,6 +204,13 @@ public class FilmController {
 
         // 根据searchType，判断查询类型
         FilmDetailVO filmDetail = filmServiceAPI.getFilmDetail(searchType, searchParam);
+
+        if (filmDetail == null) {
+            return ResponseVO.serviceFail("没有可查询的影片");
+        } else if (filmDetail.getFilmId() == null || filmDetail.getFilmId().trim().length() == 0) {
+            return ResponseVO.serviceFail("没有可查询的影片");
+        }
+
         // 不同的查询类型，传入的条件会略有不同
         String filmId = filmDetail.getFilmId();
 
