@@ -36,7 +36,7 @@
 
         from mooc_film_t film,mooc_film_info_t info
         where film.UUID = info.film_id
-          and film.film_name like "%${filmName}%"
+          and film.film_name like #{filmName}
     </select>
 
     <select id="getFilmDetailById" parameterType="java.lang.String" resultType="com.stylefeng.guns.api.film.vo.FilmDetailVO">

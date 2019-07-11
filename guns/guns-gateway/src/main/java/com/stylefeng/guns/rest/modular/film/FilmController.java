@@ -1,6 +1,8 @@
 package com.stylefeng.guns.rest.modular.film;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.dubbo.rpc.RpcContext;
+import com.stylefeng.guns.api.film.FilmAsyncServiceAPI;
 import com.stylefeng.guns.api.film.FilmServiceAPI;
 import com.stylefeng.guns.api.film.vo.*;
 import com.stylefeng.guns.rest.modular.film.vo.FilmConditionVO;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @RequestMapping("/film/")
 @RestController
@@ -20,6 +24,9 @@ public class FilmController {
 
     @Reference(interfaceClass = FilmServiceAPI.class, check = false)
     private FilmServiceAPI filmServiceAPI;
+
+    @Reference(interfaceClass = FilmAsyncServiceAPI.class, check = false, async = true)
+    private FilmAsyncServiceAPI filmAsyncServiceAPI;
     /*
     *
     * 获取首页信息
@@ -193,32 +200,36 @@ public class FilmController {
     }
 
     @RequestMapping(value = "films/{searchParam}", method = RequestMethod.GET)
-    public ResponseVO films(@PathVariable("searchParam") String searchParam, int searchType) {
+    public ResponseVO films(@PathVariable("searchParam") String searchParam, int searchType) throws ExecutionException, InterruptedException {
 
         // 根据searchType，判断查询类型
         FilmDetailVO filmDetail = filmServiceAPI.getFilmDetail(searchType, searchParam);
         // 不同的查询类型，传入的条件会略有不同
         String filmId = filmDetail.getFilmId();
-        // 查询影片的详细信息 -> Dubbo的异步获取
 
+        // 查询影片的详细信息 -> Dubbo的异步获取
         // 获取影片描述信息
-        FilmDescVO filmDescVO = filmServiceAPI.getFilmDesc(filmId);
+        filmAsyncServiceAPI.getFilmDesc(filmId);
+        Future<FilmDescVO> filmDescVOFuture = RpcContext.getContext().getFuture();
         // 获取图片信息
-        ImgVO imgVO = filmServiceAPI.getImgs(filmId);
+        filmAsyncServiceAPI.getImgs(filmId);
+        Future<ImgVO> imgVOFuture = RpcContext.getContext().getFuture();
         // 获取演员信息
-        List<ActorVO> actors = filmServiceAPI.getActors(filmId);
+        filmAsyncServiceAPI.getActors(filmId);
+        Future<List<ActorVO>> actorsVOFuture = RpcContext.getContext().getFuture();
         // 获取导演
-        ActorVO actorVO = filmServiceAPI.getDectInfo(filmId);
+        filmAsyncServiceAPI.getDectInfo(filmId);
+        Future<ActorVO> actorVOFuture = RpcContext.getContext().getFuture();
 
 
         InfoRequestVO infoRequestVO = new InfoRequestVO();
         ActorRequestVO actorRequestVO = new ActorRequestVO();
-        actorRequestVO.setActors(actors);
-        actorRequestVO.setDirector(actorVO);
+        actorRequestVO.setActors(actorsVOFuture.get());
+        actorRequestVO.setDirector(actorVOFuture.get());
 
         infoRequestVO.setActors(actorRequestVO);
-        infoRequestVO.setBiography(filmDescVO.getBiography());
-        infoRequestVO.setImgVO(imgVO);
+        infoRequestVO.setBiography(filmDescVOFuture.get().getBiography());
+        infoRequestVO.setImgVO(imgVOFuture.get());
         infoRequestVO.setFilmId(filmId);
 
         filmDetail.setInfo04(infoRequestVO);
