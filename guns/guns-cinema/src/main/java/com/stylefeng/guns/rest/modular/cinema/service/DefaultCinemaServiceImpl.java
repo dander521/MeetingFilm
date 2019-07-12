@@ -181,25 +181,42 @@ public class DefaultCinemaServiceImpl implements CinemaServiceAPI {
     // 5、根据影院编号，获取影院信息
     @Override
     public CinemaInfoVO getCinemaInfoById(int cinemaId) {
-        return null;
+
+        MoocCinemaT cinemaT = moocCinemaTMapper.selectById(cinemaId);
+
+        CinemaInfoVO cinemaInfoVO = new CinemaInfoVO();
+        cinemaInfoVO.setImgUrl(cinemaT.getImgAddress());
+        cinemaInfoVO.setCinemaPhone(cinemaT.getCinemaPhone());
+        cinemaInfoVO.setCinemaName(cinemaT.getCinemaName());
+        cinemaInfoVO.setCinemaId(cinemaT.getUuid()+"");
+        cinemaInfoVO.setCinemaAdress(cinemaT.getCinemaAddress());
+
+        return cinemaInfoVO;
     }
 
     // 6、获取所有电影的信息和对应的放映场次信息，根据影院编号
     @Override
-    public FilmInfoVO getFilmInfoByCinemaId(int cinemaId) {
-        return null;
+    public List<FilmInfoVO> getFilmInfoByCinemaId(int cinemaId) {
+
+        List<FilmInfoVO> filmInfoVOS = moocFieldTMapper.getFilmInfos(cinemaId);
+
+        return filmInfoVOS;
     }
 
     // 7、根据放映场次id获取放映信息
     @Override
-    public FilmFieldVO getFilmFieldInfo(int fieldId) {
-        return null;
+    public HallInfoVO getFilmFieldInfo(int fieldId) {
+
+        HallInfoVO hallInfoVO = moocFieldTMapper.getHallInfo(fieldId);
+        return hallInfoVO;
     }
 
     // 8、根据放映场次查询播放的电影编号，然后根据电影编号获取对应的电影信息
     @Override
     public FilmInfoVO getFilmInfoByFieldId(int fieldId) {
-        return null;
+
+        FilmInfoVO filmInfoVO = moocFieldTMapper.getFilmInfoById(fieldId);
+        return filmInfoVO;
     }
 
 }
