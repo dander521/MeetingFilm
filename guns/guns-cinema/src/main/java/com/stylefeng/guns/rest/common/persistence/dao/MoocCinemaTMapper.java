@@ -1,5 +1,6 @@
 package com.stylefeng.guns.rest.common.persistence.dao;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.rest.common.persistence.model.MoocCinemaT;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface MoocCinemaTMapper extends BaseMapper<MoocCinemaT> {
 
+    void selectPage(Page<MoocCinemaT> page);
 }
