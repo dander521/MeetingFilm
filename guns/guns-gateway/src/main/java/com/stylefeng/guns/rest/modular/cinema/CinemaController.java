@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/cinema/")
 public class CinemaController {
 
-    @Reference(interfaceClass = CinemaServiceAPI.class, check = false)
+    @Reference(interfaceClass = CinemaServiceAPI.class, check = false, cache = "lru")
     private CinemaServiceAPI cinemaServiceAPI;
 
     private static final String IMG_PRE = "http://img.meetingshop.cn/";
@@ -45,6 +45,10 @@ public class CinemaController {
         }
     }
 
+    /*
+        1、热点数据 -> 放缓存
+
+    */
     @RequestMapping(value = "getCondition")
     public ResponseVO getCondition(CinemaQueryVO cinemaQueryVO) {
 
