@@ -66,6 +66,7 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <!-- 熔断器依赖 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
