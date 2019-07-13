@@ -47,4 +47,4 @@ logging:
   level.root: info
   level.com.stylefeng: debug
   path: logs/
-  file: guns-rest.log
+  file: guns-gateway.log
