@@ -32,7 +32,7 @@
         select
             o.UUID as orderId,
             h.film_name as filmName,
-            concat('今天 ', date_format(o.order_time,'%m月%d日'),' ',f.begin_time)  as fieldTime,
+            concat('今天 ', date_format(o.order_time,'%y年%m月%d日'),' ',f.begin_time)  as fieldTime,
             c.cinema_name as cinemaName,
             o.seats_name as seatsName,
             o.order_price as orderPrice,
@@ -51,7 +51,7 @@
         select
             o.UUID as orderId,
             h.film_name as filmName,
-            concat(date_format(o.order_time,'%年%m月%d日'),' ',f.begin_time)  as fieldTime,
+            concat(date_format(o.order_time,'%y年%m月%d日'),' ',f.begin_time)  as fieldTime,
             c.cinema_name as cinemaName,
             o.seats_name as seatsName,
             o.order_price as orderPrice,
