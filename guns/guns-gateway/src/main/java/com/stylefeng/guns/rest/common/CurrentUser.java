@@ -4,7 +4,7 @@ package com.stylefeng.guns.rest.common;
 public class CurrentUser {
 
     // 线程绑定的存储空间
-    private static final ThreadLocal<String> threadlocal = new ThreadLocal<>();
+    private static final InheritableThreadLocal<String> threadlocal = new InheritableThreadLocal<>();
     // 将用户信息放入存储空间
     public static void saveUserId(String userId) {
         threadlocal.set(userId);
