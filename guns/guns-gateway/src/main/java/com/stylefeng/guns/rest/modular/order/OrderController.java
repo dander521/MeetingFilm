@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVO;
+import com.stylefeng.guns.core.util.TokenBucket;
 import com.stylefeng.guns.rest.common.CurrentUser;
 import com.stylefeng.guns.rest.modular.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/order/")
 public class OrderController {
+
+    private static TokenBucket tokenBucket = new TokenBucket();
 
     private static final String IMG_PRE = "";
 
@@ -38,28 +41,32 @@ public class OrderController {
     public ResponseVO buyTickets(Integer fieldId, String soldSeats, String seatsName) throws IOException {
 
         try {
-            // 验证前端参数
-            // 验证售出的票是否为真
-            boolean isTrue = orderServiceAPI.isTrueSeats(fieldId + "", soldSeats);
-            // 已销售的座位里 有没有这些座位
-            boolean isNotSold = orderServiceAPI.isNotSoldSeats(fieldId + "", soldSeats);
+            if (tokenBucket.getToken()) {
+                // 验证前端参数
+                // 验证售出的票是否为真
+                boolean isTrue = orderServiceAPI.isTrueSeats(fieldId + "", soldSeats);
+                // 已销售的座位里 有没有这些座位
+                boolean isNotSold = orderServiceAPI.isNotSoldSeats(fieldId + "", soldSeats);
 
-            if (isTrue && isNotSold) {
-                // 创建订单信息
-                String userId = CurrentUser.getCurrentUserId();
-                if (userId != null && userId.trim().length()>0) {
-                    OrderVO orderVO = orderServiceAPI.saveOrderInfo(fieldId,soldSeats,seatsName,Integer.parseInt(userId));
-                    if (orderVO == null) {
-                        log.error("购票未成功");
-                        return ResponseVO.serviceFail("购票业务异常");
+                if (isTrue && isNotSold) {
+                    // 创建订单信息
+                    String userId = CurrentUser.getCurrentUserId();
+                    if (userId != null && userId.trim().length()>0) {
+                        OrderVO orderVO = orderServiceAPI.saveOrderInfo(fieldId,soldSeats,seatsName,Integer.parseInt(userId));
+                        if (orderVO == null) {
+                            log.error("购票未成功");
+                            return ResponseVO.serviceFail("购票业务异常");
+                        } else {
+                            return ResponseVO.success(orderVO);
+                        }
                     } else {
-                        return ResponseVO.success(orderVO);
+                        return ResponseVO.serviceFail("用户未登录");
                     }
                 } else {
-                    return ResponseVO.serviceFail("用户未登录");
+                    return ResponseVO.serviceFail("订单中的座位编号有问题");
                 }
             } else {
-                return ResponseVO.serviceFail("订单中的座位编号有问题");
+                return ResponseVO.serviceFail("购买人数较多，请稍后再试");
             }
         } catch (Exception e) {
             log.error("购票未成功");
