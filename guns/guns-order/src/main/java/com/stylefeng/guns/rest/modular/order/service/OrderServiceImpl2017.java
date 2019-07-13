@@ -11,8 +11,8 @@ import com.stylefeng.guns.api.cinema.vo.OrderQueryVO;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVO;
 import com.stylefeng.guns.core.util.UUIDUtil;
-import com.stylefeng.guns.rest.common.persistence.dao.MoocOrderTMapper;
-import com.stylefeng.guns.rest.common.persistence.model.MoocOrderT;
+import com.stylefeng.guns.rest.common.persistence.dao.MoocOrder2017TMapper;
+import com.stylefeng.guns.rest.common.persistence.model.MoocOrder2017T;
 import com.stylefeng.guns.rest.common.util.FTPUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +26,11 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Service(interfaceClass = OrderServiceAPI.class, group = "default")
-public class DefaultOrderServiceImpl implements OrderServiceAPI {
+@Service(interfaceClass = OrderServiceAPI.class, group = "order2017")
+public class OrderServiceImpl2017 implements OrderServiceAPI {
 
     @Autowired
-    private MoocOrderTMapper moocOrderTMapper;
+    private MoocOrder2017TMapper moocOrderTMapper;
 
     // 服务之间可黑盒互相调用
     @Reference(interfaceClass = CinemaServiceAPI.class, check = false)
@@ -75,10 +75,10 @@ public class DefaultOrderServiceImpl implements OrderServiceAPI {
         EntityWrapper entityWrapper = new EntityWrapper();
         entityWrapper.eq("field_id", fieldId);
 
-        List<MoocOrderT> list = moocOrderTMapper.selectList(entityWrapper);
+        List<MoocOrder2017T> list = moocOrderTMapper.selectList(entityWrapper);
         String[] seatsArrs = seats.split(",");
 
-        for (MoocOrderT orderT : list) {
+        for (MoocOrder2017T orderT : list) {
             String[] ids = orderT.getSeatsIds().split(",");
             for (String id : ids) {
                 for (String seat : seatsArrs) {
@@ -107,7 +107,7 @@ public class DefaultOrderServiceImpl implements OrderServiceAPI {
         int solds = soldSeats.split(",").length;
         double totalPrice = getTotalPrice(solds, filmPrice);
 
-        MoocOrderT orderT = new MoocOrderT();
+        MoocOrder2017T orderT = new MoocOrder2017T();
         orderT.setUuid(uuid);
         orderT.setSeatsName(seatsName);
         orderT.setSeatsIds(soldSeats);
@@ -159,7 +159,7 @@ public class DefaultOrderServiceImpl implements OrderServiceAPI {
                 result.setRecords(new ArrayList<>());
                 return result;
             } else {
-                EntityWrapper<MoocOrderT> moocOrderTEntityWrapper = new EntityWrapper<>();
+                EntityWrapper<MoocOrder2017T> moocOrderTEntityWrapper = new EntityWrapper<>();
                 moocOrderTEntityWrapper.eq("order_user",userId);
                 int count = moocOrderTMapper.selectCount(moocOrderTEntityWrapper);
                 result.setTotal(count);

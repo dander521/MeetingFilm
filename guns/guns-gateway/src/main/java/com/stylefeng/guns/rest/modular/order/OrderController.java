@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -21,8 +23,15 @@ public class OrderController {
 
     private static final String IMG_PRE = "";
 
-    @Reference(interfaceClass = OrderServiceAPI.class, check = false)
+    @Reference(interfaceClass = OrderServiceAPI.class,
+            check = false,
+            group = "order2018")
     private OrderServiceAPI orderServiceAPI;
+
+    @Reference(interfaceClass = OrderServiceAPI.class,
+            check = false,
+            group = "order2017")
+    private OrderServiceAPI orderServiceAPI2017;
 
     // 购票
     @RequestMapping(value = "buyTickets", method = RequestMethod.POST)
@@ -70,8 +79,15 @@ public class OrderController {
         Page<OrderVO> page = new Page<>(nowPage,pageSize);
 
         if (userId != null && userId.trim().length()>0) {
-            Page<OrderVO> orderByUserId = orderServiceAPI.getOrderByUserId(Integer.parseInt(userId), page);
-            return ResponseVO.success(nowPage,pageSize,IMG_PRE,orderByUserId.getRecords());
+            Page<OrderVO> result2018 = orderServiceAPI.getOrderByUserId(Integer.parseInt(userId), page);
+            Page<OrderVO> result2017 = orderServiceAPI2017.getOrderByUserId(Integer.parseInt(userId), page);
+
+            int totalPages = (int)(result2017.getPages() + result2018.getPages());
+            List<OrderVO> orderVOList = new ArrayList<>();
+            orderVOList.addAll(result2017.getRecords());
+            orderVOList.addAll(result2018.getRecords());
+
+            return ResponseVO.success(nowPage,totalPages,IMG_PRE,orderVOList);
         } else {
             return ResponseVO.serviceFail("用户未登录");
         }
