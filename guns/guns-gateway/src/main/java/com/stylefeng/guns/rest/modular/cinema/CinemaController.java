@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.api.cinema.CinemaServiceAPI;
 import com.stylefeng.guns.api.cinema.vo.*;
+import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.rest.modular.cinema.vo.CinemaConditionResponseVO;
 import com.stylefeng.guns.rest.modular.cinema.vo.CinemaFieldResponseVO;
 import com.stylefeng.guns.rest.modular.cinema.vo.CinemaFieldsResponseVO;
@@ -25,6 +26,9 @@ public class CinemaController {
     private CinemaServiceAPI cinemaServiceAPI;
 
     private static final String IMG_PRE = "http://img.meetingshop.cn/";
+
+    @Reference(interfaceClass = OrderServiceAPI.class, check = false)
+    private OrderServiceAPI orderServiceAPI;
 
     @RequestMapping(value = "getCinemas")
     public ResponseVO getCinemas(CinemaQueryVO cinemaQueryVO) {
@@ -97,8 +101,8 @@ public class CinemaController {
             HallInfoVO filmFieldInfo = cinemaServiceAPI.getFilmFieldInfo(fieldId);
 
 
-            // 造假数据 后期对接订单接口
-            filmFieldInfo.setSoldSeats("1,2,3");
+            // 后期对接订单接口
+            filmFieldInfo.setSoldSeats(orderServiceAPI.getSoldSeatsByFieldId(fieldId));
 
             CinemaFieldResponseVO cinemaFieldResponseVO = new CinemaFieldResponseVO();
             cinemaFieldResponseVO.setCinemaInfo(cinemaInfoById);
