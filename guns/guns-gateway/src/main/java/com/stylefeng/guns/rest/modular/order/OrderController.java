@@ -133,7 +133,7 @@ public class OrderController {
         // 获取当前登录人的信息
         String userId = CurrentUser.getCurrentUserId();
 
-        if (userId != null && userId.trim().length()>0) {
+        if (userId == null && userId.trim().length()==0) {
             return ResponseVO.serviceFail("用户未登录");
         }
 
@@ -148,7 +148,7 @@ public class OrderController {
         // 获取当前登录人的信息
         String userId = CurrentUser.getCurrentUserId();
 
-        if (userId != null && userId.trim().length()>0) {
+        if (userId == null && userId.trim().length()==0) {
             return ResponseVO.serviceFail("用户未登录");
         }
 
