@@ -10,6 +10,7 @@ import com.stylefeng.guns.api.alipay.vo.AliPayResultVO;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVO;
 import com.stylefeng.guns.core.util.TokenBucket;
+import com.stylefeng.guns.core.util.ToolUtil;
 import com.stylefeng.guns.rest.common.CurrentUser;
 import com.stylefeng.guns.rest.modular.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
@@ -141,7 +142,8 @@ public class OrderController {
     }
 
     @RequestMapping(value = "getPayResult", method = RequestMethod.POST)
-    public ResponseVO getPayResult(@RequestParam("orderId") String orderId, @RequestParam("tyrNums") Integer tyrNums) {
+    public ResponseVO getPayResult(@RequestParam("orderId") String orderId,
+                                   @RequestParam(name = "tyrNums", required = false, defaultValue = "1") Integer tyrNums) {
 
         // 获取当前登录人的信息
         String userId = CurrentUser.getCurrentUserId();
@@ -154,6 +156,13 @@ public class OrderController {
             return ResponseVO.serviceFail("请求次数过多，稍后再试");
         } else {
             AliPayResultVO aliPayResultVO = aliPayServiceAPI.getOrderStatus(orderId);
+            if (aliPayResultVO==null || ToolUtil.isEmpty(aliPayResultVO.getOrderId())) {
+                AliPayResultVO service = new AliPayResultVO();
+                service.setOrderMsg("支付未成功");
+                service.setOrderStatus(0);
+                service.setOrderId(orderId);
+                return ResponseVO.success(service);
+            }
             return ResponseVO.success(aliPayResultVO);
         }
     }
