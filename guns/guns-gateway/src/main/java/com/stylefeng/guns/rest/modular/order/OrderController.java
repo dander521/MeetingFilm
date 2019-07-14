@@ -4,6 +4,9 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import com.stylefeng.guns.api.alipay.AliPayServiceAPI;
+import com.stylefeng.guns.api.alipay.vo.AliPayInfoVO;
+import com.stylefeng.guns.api.alipay.vo.AliPayResultVO;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVO;
 import com.stylefeng.guns.core.util.TokenBucket;
@@ -37,6 +40,9 @@ public class OrderController {
             check = false,
             group = "order2017")
     private OrderServiceAPI orderServiceAPI2017;
+
+    @Reference(interfaceClass = AliPayServiceAPI.class, check = false)
+    private AliPayServiceAPI aliPayServiceAPI;
 
     public ResponseVO error(Integer fieldId, String soldSeats, String seatsName) {
         return ResponseVO.serviceFail("很抱歉，当前购买人数较多，请稍后再试");
@@ -117,6 +123,38 @@ public class OrderController {
             return ResponseVO.success(nowPage,totalPages,IMG_PRE,orderVOList);
         } else {
             return ResponseVO.serviceFail("用户未登录");
+        }
+    }
+
+    @RequestMapping(value = "getPayInfo", method = RequestMethod.POST)
+    public ResponseVO getPayInfo(@RequestParam("orderId") String orderId) {
+
+        // 获取当前登录人的信息
+        String userId = CurrentUser.getCurrentUserId();
+
+        if (userId != null && userId.trim().length()>0) {
+            return ResponseVO.serviceFail("用户未登录");
+        }
+
+        AliPayInfoVO aliPayInfoVO = aliPayServiceAPI.getQRCode(orderId);
+        return ResponseVO.success(IMG_PRE, aliPayInfoVO);
+    }
+
+    @RequestMapping(value = "getPayResult", method = RequestMethod.POST)
+    public ResponseVO getPayResult(@RequestParam("orderId") String orderId, @RequestParam("tyrNums") Integer tyrNums) {
+
+        // 获取当前登录人的信息
+        String userId = CurrentUser.getCurrentUserId();
+
+        if (userId != null && userId.trim().length()>0) {
+            return ResponseVO.serviceFail("用户未登录");
+        }
+
+        if (tyrNums>=4) {
+            return ResponseVO.serviceFail("请求次数过多，稍后再试");
+        } else {
+            AliPayResultVO aliPayResultVO = aliPayServiceAPI.getOrderStatus(orderId);
+            return ResponseVO.success(aliPayResultVO);
         }
     }
 }
