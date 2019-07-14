@@ -10,6 +10,7 @@ import com.stylefeng.guns.api.alipay.vo.AliPayInfoVO;
 import com.stylefeng.guns.api.alipay.vo.AliPayResultVO;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVO;
+import com.stylefeng.guns.rest.common.util.FTPUtil;
 import com.stylefeng.guns.rest.modular.alipay.config.Configs;
 import com.stylefeng.guns.rest.modular.alipay.model.ExtendParams;
 import com.stylefeng.guns.rest.modular.alipay.model.GoodsDetail;
@@ -25,8 +26,10 @@ import com.stylefeng.guns.rest.modular.alipay.service.impl.AlipayTradeWithHBServ
 import com.stylefeng.guns.rest.modular.alipay.utils.Utils;
 import com.stylefeng.guns.rest.modular.alipay.utils.ZxingUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +49,9 @@ public class DefaultAliPayServiceImpl implements AliPayServiceAPI {
 
     // 支付宝交易保障接口服务，供测试接口api使用，请先阅读readme.txt
     private static AlipayMonitorService monitorService;
+
+    @Autowired
+    private FTPUtil ftpUtil;
 
     static {
         /** 一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
@@ -164,8 +170,18 @@ public class DefaultAliPayServiceImpl implements AliPayServiceAPI {
                 // 需要修改为运行机器上的路径
                 filePath = String.format("/Users/dander/Desktop/qr-%s.png",
                         response.getOutTradeNo());
+                String fileName = String.format("/qr-%s.png",
+                        response.getOutTradeNo());
                 log.info("filePath:" + filePath);
-                ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);
+                File qrCodeImge = ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);
+
+                boolean isSuccess = ftpUtil.uploadFile(fileName, qrCodeImge);
+
+                if (!isSuccess) {
+                    filePath = "";
+                    log.error("二维码上传失败");
+                }
+
                 break;
 
             case FAILED:
