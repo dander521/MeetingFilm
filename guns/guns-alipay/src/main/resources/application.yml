@@ -14,7 +14,7 @@ ftp:
   port: 21
   user-name: ftptest
   password: Asd123456@
-  upload-path: /qrcode
+  serverqr: /serverqr
 
 server:
   port: 8087 #项目端口

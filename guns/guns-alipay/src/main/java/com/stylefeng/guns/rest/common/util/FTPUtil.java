@@ -19,7 +19,7 @@ public class FTPUtil {
     private Integer port;
     private String userName;
     private String password;
-    private String uploadPath;
+    private String serverqr;
 
     private FTPClient ftpClient = null;
 
@@ -74,7 +74,7 @@ public class FTPUtil {
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
             ftpClient.enterLocalPassiveMode();
 
-            ftpClient.changeWorkingDirectory(this.getUploadPath());
+            ftpClient.changeWorkingDirectory(this.getServerqr());
             ftpClient.storeFile(fileName, fileInputStream);
             return true;
         } catch (Exception e) {
